@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,11 +19,21 @@ namespace WebEssentials.AspNetCore.OutputCaching
 
             if (!string.IsNullOrEmpty(profile.VaryByParam))
             {
-                foreach (string param in profile.VaryByParam.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                if (profile.VaryByParam == "*")
                 {
-                    if (param == "*" || request.Query.ContainsKey(param))
+                    foreach (var param in request.Query.OrderBy(q => q.Key))
                     {
-                        key += param + "=" + request.Query[param];
+                        key += param.Key + "=" + param.Value;
+                    }
+                }
+                else
+                {
+                    foreach (string param in profile.VaryByParam.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (param == "*" || request.Query.ContainsKey(param))
+                        {
+                            key += param + "=" + request.Query[param];
+                        }
                     }
                 }
             }
