@@ -35,7 +35,7 @@ namespace WebEssentials.AspNetCore.OutputCaching
         /// <summary>
         /// Globbing patterns relative to <see cref="FileProvider"/> (default file provider is the content root, not the wwwroot).
         /// </summary>
-        public IEnumerable<string> FileDependencies { get; set; } = new[] { "**/*.*" };
+        public string[] FileDependencies { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// File provider to use for file dependencies. When not set, the content root file provider is used (not the wwwroot).

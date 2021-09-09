@@ -20,10 +20,10 @@ namespace Microsoft.AspNetCore.Mvc
         {
             _fileDependencies = fileDependencies;
 
-            if (fileDependencies.Length == 0)
-            {
-                _fileDependencies = new[] { "**/*.*" };
-            }
+            //if (fileDependencies.Length == 0)
+            //{
+            //    _fileDependencies = new[] { "**/*.*" };
+            //}
         }
 
         /// <summary>
