@@ -7,15 +7,15 @@ namespace WebEssentials.AspNetCore.OutputCaching
 {
     internal class OutputCacheKeysProvider : IOutputCacheKeysProvider
     {
-        public string GetCacheProfileCacheKey(HttpRequest request)
+        public string GetCacheProfileCacheKey(HttpRequest request, string httpMethod = null, string forPath = null)
         {
-            return $"{request.Method}_{request.Host}{request.Path}";
+            return $"{httpMethod ?? request.Method}_{request.Host}{forPath ?? request.Path}";
         }
 
-        public string GetRequestCacheKey(HttpContext context, OutputCacheProfile profile)
+        public string GetRequestCacheKey(HttpContext context, OutputCacheProfile profile, string httpMethod = null, string forPath = null, IQueryCollection query = null)
         {
             HttpRequest request = context.Request;
-            string key = GetCacheProfileCacheKey(request) + "_";
+            string key = GetCacheProfileCacheKey(request, httpMethod, forPath) + "_";
 
             if (!string.IsNullOrEmpty(profile.VaryByParam))
             {
@@ -57,12 +57,12 @@ namespace WebEssentials.AspNetCore.OutputCaching
                 {
                     foreach (string argument in profile.VaryByCustom.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        key += argument + "=" + varyByCustomService.GetVaryByCustomString(argument);
+                        key += argument + "=" + varyByCustomService.GetVaryByCustomString(context, argument);
                     }
                 }
             }
 
-            return key;
+            return key.ToLowerInvariant();
         }
     }
 }
